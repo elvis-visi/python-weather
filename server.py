@@ -16,7 +16,16 @@ def index():
 @app.route("/weather")
 def get_weather():
     city = request.args.get("city")
+
+    if not bool(city.strip()):
+        city = "London"
+
     weather_data = get_current_weather(city)
+
+    # city not found
+    if not weather_data["cod"] == 200:
+        return render_template("city-not-found.html")
+
     ## now we want to send the data to the template; these will be used in the weather.html template
     ## title, status, etc. we fetch the data from the json obj returned from get API call, then return them to weather.html
     return render_template(
